@@ -1,31 +1,13 @@
-import json
-from typing import List, Optional
-
-from pydantic import BaseModel
+from typing import List
 import spacy
 
-JSON_DATA_INPATH = "data/data.json"
-JSON_DATA_OUTPATH = "data/data_processed.json"
+from common import load_json, write_json
+from schemas import RawWikiArticle, WikiArticleWithToken
+
+JSON_DATA_INPATH = "../data/data.json"
+JSON_DATA_OUTPATH = "../data/data_with_tokens.json"
 
 nlp = spacy.load("en_core_web_sm")
-
-
-class WikiArticle(BaseModel):
-    """Class to hold a wii article"""
-    title: str
-    text: str
-    url: str
-    tokenized_text: Optional[List[str]]
-
-
-def load_wiki_articles() -> List[WikiArticle]:
-    """Load wiki data from json file.
-
-    Returns as a list of dictionaries, one per wiki article.
-    """
-    with open(JSON_DATA_INPATH, "r") as f:
-        wiki_articles = json.load(f)
-    return [WikiArticle(**wiki_article) for wiki_article in wiki_articles]
 
 
 def get_tokens(text: str) -> List[str]:
@@ -39,8 +21,8 @@ def get_tokens(text: str) -> List[str]:
     ]
 
 
-def preprocess_wiki_articles(wiki_articles: List[WikiArticle]) -> List[WikiArticle]:
-    return [WikiArticle(
+def add_tokens(wiki_articles: List[RawWikiArticle]) -> List[WikiArticleWithToken]:
+    return [WikiArticleWithToken(
                 title=wiki_article.title,
                 text=wiki_article.text,
                 url=wiki_article.url,
@@ -49,11 +31,11 @@ def preprocess_wiki_articles(wiki_articles: List[WikiArticle]) -> List[WikiArtic
 
 
 if __name__ == "__main__":
-    wiki_articles = load_wiki_articles()
-    wiki_articles_with_tokens = preprocess_wiki_articles(wiki_articles)
-
-    with open(JSON_DATA_OUTPATH, "w") as f:
-        json.dump(
-            [wiki_article.dict() for wiki_article in wiki_articles_with_tokens],
-            f
-        )
+    wiki_articles = [
+        RawWikiArticle(**wiki_article) for wiki_article in load_json(JSON_DATA_INPATH)
+    ]
+    wiki_articles_with_tokens = add_tokens(wiki_articles)
+    write_json(
+        object=[wiki_article.dict() for wiki_article in wiki_articles_with_tokens],
+        json_path=JSON_DATA_OUTPATH
+    )

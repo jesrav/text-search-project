@@ -131,3 +131,4 @@ dmypy.json
 # intelij
 .idea
 /data/
+!/data/data.json
