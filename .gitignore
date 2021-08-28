@@ -130,5 +130,5 @@ dmypy.json
 
 # intelij
 .idea
-/data/
+/data/*.json
 !/data/data.json
