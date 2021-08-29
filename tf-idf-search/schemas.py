@@ -1,7 +1,6 @@
-from typing import List, Optional, Dict
+from typing import List
 
 from pydantic import BaseModel
-from numpy import array
 
 tokens = List[str]
 
@@ -20,4 +19,4 @@ class WikiArticleWithToken(RawWikiArticle):
 
 class WikiArticleWithTFIDF(WikiArticleWithToken):
     """Class to hold a wiki article with tfidfs"""
-    tfidfs: Dict[str, int]
+    tfidfs: List[float]
