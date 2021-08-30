@@ -111,7 +111,7 @@ def main(search):
     ]
 
     if search:
-        search_text = input("Enter seacrh text: ")
+        search_text = input("Enter search text: ")
         search_doc = Document(text=search_text)
         search_doc_with_tokens = add_tokens(documents=[search_doc])[0]
         search_doc_with_tfidf = transformer.transform(document=search_doc_with_tokens)
