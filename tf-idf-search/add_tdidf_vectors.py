@@ -32,7 +32,8 @@ class TFIDFTransformer:
         n_documents_containing_token = len(
             [doc for doc in documents if token in doc.tokenized_text]
         )
-        return n_documents_containing_token / len(documents)
+        n_documents = len(documents)
+        return np.log(n_documents / n_documents_containing_token)
 
     def fit(self, documents: List[DocumentWithTokens]) -> None:
         self.corpus_vocabulary = list(set(
