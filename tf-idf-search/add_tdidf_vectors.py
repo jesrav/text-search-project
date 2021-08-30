@@ -116,14 +116,15 @@ def main(search):
         relevant_docs = tfidf_search(search_doc_with_tfidf, wiki_articles_with_tfidf)
         print([doc.title for doc in relevant_docs])
 
-    write_json(
-        object=[wiki_article.dict() for wiki_article in wiki_articles_with_tfidf],
-        json_path=JSON_DATA_OUTPATH
-    )
-    write_json(
-        object=transformer.to_dict(),
-        json_path=JSON_TRANSFORMER_OUTPATH
-    )
+    else:
+        write_json(
+            object=[wiki_article.dict() for wiki_article in wiki_articles_with_tfidf],
+            json_path=JSON_DATA_OUTPATH
+        )
+        write_json(
+            object=transformer.to_dict(),
+            json_path=JSON_TRANSFORMER_OUTPATH
+        )
 
 
 if __name__ == "__main__":
