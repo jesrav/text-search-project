@@ -16,7 +16,7 @@ JSON_TRANSFORMER_OUTPATH = "../data/seriealized_tfidf_transformer.json"
 
 
 class TFIDFTransformer:
-
+    """Transformer to get TFIDF vectors."""
     def __init__(self, inverse_document_frequencies=None, corpus_vocabulary = None):
         self.inverse_document_frequencies = inverse_document_frequencies
         self.corpus_vocabulary = corpus_vocabulary
@@ -110,12 +110,14 @@ def main(search):
     ]
 
     if search:
-        search_text = input()
+        search_text = input("Enter seacrh text: ")
         search_doc = Document(text=search_text)
         search_doc_with_tokens = add_tokens(documents=[search_doc])[0]
         search_doc_with_tfidf = transformer.transform(document=search_doc_with_tokens)
         relevant_docs = tfidf_search(search_doc_with_tfidf, wiki_articles_with_tfidf)
-        print([doc.title for doc in relevant_docs])
+        print("Titles of top five most similar articles in database:")
+        for doc in relevant_docs:
+            print(doc.title)
 
     else:
         write_json(
