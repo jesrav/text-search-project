@@ -83,6 +83,7 @@ def get_index_of_n_highest_values(l: list, n: int) -> list[int]:
 
 
 def tfidf_search(document: DocumentsWithTFIDF, document_db: [DocumentsWithTFIDF], n: int = 5):
+    """Find the n most similar documents using cosine similarity."""
     cosine_similarities = [
         float(cosine_similarity(
             np.array(document.tfidfs).reshape(1, -1),
