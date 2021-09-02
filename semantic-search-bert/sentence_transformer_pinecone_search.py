@@ -41,3 +41,6 @@ def search(query: str, index: pinecone.Index, k=5):
 results = search("How many people have died during Black Death?", index)
 for id in results[0].ids:
     print(sentences[int(id)])
+
+# Clean up resources
+pinecone.delete_index(PINECONE_INDEX_NAME)
