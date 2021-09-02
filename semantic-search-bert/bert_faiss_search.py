@@ -14,7 +14,7 @@ tokenizer = AutoTokenizer.from_pretrained("distilbert-base-uncased")
 model = AutoModel.from_pretrained("distilbert-base-uncased")
 
 
-class FaissIndexSearch:
+class BertFaissIndexSearch:
     """Toy implementation of faiss index search with word embeddings"""
     def __init__(self, documents: List[str]):
         self.documents = documents
@@ -44,8 +44,8 @@ class FaissIndexSearch:
       return list(zip(results, scores))
 
 
-faiss_search = FaissIndexSearch(documents=load_json(JSON_INPATH))
+faiss_search = BertFaissIndexSearch(documents=load_json(JSON_INPATH))
 
 # Testing it out
-faiss_search.search("How many people have died during Black Death?")
+faiss_search.search(100*"How many people have died during Black Death?")
 faiss_search.search("Viruses in nanotechnology")
