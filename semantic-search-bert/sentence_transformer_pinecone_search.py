@@ -29,7 +29,6 @@ encoded_docs = [model.encode(doc) for doc in sentences]
 
 index.upsert(items=zip(range(len(encoded_docs)), [v for v in encoded_docs]))
 
-
 ##################################################
 # Search index
 ##################################################

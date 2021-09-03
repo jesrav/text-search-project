@@ -130,5 +130,10 @@ dmypy.json
 
 # intelij
 .idea
-/data/*.json
+
+# Data
+semantic-search-bert/data/*.json
+semantic-search-bert/data/*.pickle
+tf-idf-search/data/*.json
+!semantic-search-bert/data/sentences.json
 !/data/data.json
