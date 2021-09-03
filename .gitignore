@@ -137,3 +137,6 @@ semantic-search-bert/data/*.pickle
 tf-idf-search/data/*.json
 !semantic-search-bert/data/sentences.json
 !/data/data.json
+
+# Wip scripts
+/semantic-search-bert/danish_wip.py
