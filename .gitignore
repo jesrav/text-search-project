@@ -132,11 +132,11 @@ dmypy.json
 .idea
 
 # Data
-semantic-search-bert/data/*.json
-semantic-search-bert/data/*.pickle
-tf-idf-search/data/*.json
-!semantic-search-bert/data/sentences.json
-!/data/data.json
+part2-semantic-search-bert/data/*.json
+part2-semantic-search-bert/data/*.pickle
+part1-tf-idf-search/data/*.json
+!part2-semantic-search-bert/data/sentences.json
+!part2-semantic-search-bert/data/data.json
 
 # Wip scripts
-/semantic-search-bert/danish_wip.py
+/part2-semantic-search-bert/danish_wip.py

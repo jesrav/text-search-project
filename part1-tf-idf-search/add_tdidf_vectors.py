@@ -10,9 +10,9 @@ import click
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
-JSON_DATA_INPATH = "../data/data_with_tokens.json"
-JSON_DATA_OUTPATH = "../data/data_with_tokens_and_tfidf.json"
-JSON_TRANSFORMER_OUTPATH = "../data/seriealized_tfidf_transformer.json"
+JSON_DATA_INPATH = "data/data_with_tokens.json"
+JSON_DATA_OUTPATH = "data/data_with_tokens_and_tfidf.json"
+JSON_TRANSFORMER_OUTPATH = "data/seriealized_tfidf_transformer.json"
 
 
 class TFIDFTransformer:

@@ -4,8 +4,8 @@ import spacy
 from common import load_json, write_json
 from schemas import Document, DocumentWithTokens
 
-JSON_DATA_INPATH = "../data/data.json"
-JSON_DATA_OUTPATH = "../data/data_with_tokens.json"
+JSON_DATA_INPATH = "data/data.json"
+JSON_DATA_OUTPATH = "data/data_with_tokens.json"
 
 nlp = spacy.load("en_core_web_sm")
 
