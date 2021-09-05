@@ -1,14 +1,10 @@
 from dataclasses import dataclass
 from typing import Optional, List
 
+import torch
 from elasticsearch import Elasticsearch
-from elasticsearch_dsl import Search
+from sentence_transformers import SentenceTransformer, util
 
-from common import load_json
-
-DATA_IN_PATH = "data/data.json"
-
-documents = load_json(DATA_IN_PATH)
 
 # Connect to elastic seach cluster running on localhost
 es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
@@ -16,9 +12,14 @@ es = Elasticsearch([{'host': 'localhost', 'port': 9200}])
 
 @dataclass
 class RawSearchResult:
-    texts: List[str]
-    section_titles: List[str]
-    article_titles: List[str]
+    text: str
+    section_title: str
+    article_title: str
+
+
+@dataclass
+class SemanticSearchResult(RawSearchResult):
+    bert_score: float
 
 
 def search(
@@ -26,7 +27,7 @@ def search(
         sections_to_exclude: Optional[List[str]] = None,
         n_results: int = 50,
         index: str = "",
-):
+) -> List[RawSearchResult]:
     if not sections_to_exclude:
         sections_to_exclude = []
     query_body = {
@@ -45,28 +46,57 @@ def search(
 
     docs = es.search(index=index, body=query_body)
 
-    texts = []
-    section_titles = []
-    article_titles = []
+    return [RawSearchResult(
+                text=h["_source"]["text"],
+                section_title=h["_source"]["section_title"],
+                article_title=h["_source"]["article_title"],
+            ) for h in docs['hits']['hits']]
 
-    for h in docs['hits']['hits']:
-        texts.append(h["_source"]["text"])
-        section_titles.append(h["_source"]["section_title"])
-        article_titles.append(h["_source"]["article_title"])
 
-    return RawSearchResult(
-        texts=texts,
-        section_titles=section_titles,
-        article_titles=article_titles,
+def semantic_reranking(
+        query: str,
+        raw_search_results: List[RawSearchResult],
+        embedder: SentenceTransformer,
+        top_k: int = 10
+):
+    corpus_embeddings = embedder.encode([raw.text for raw in raw_search_results], convert_to_tensor=True)
+    query_embedding = embedder.encode(query, convert_to_tensor=True)
+    reranked_results = (
+        util.semantic_search(query_embedding, corpus_embeddings, top_k=top_k)[0]
     )
 
+    reranked_semantic_search_results = []
 
+    for item in reranked_results:
+        idx = item['corpus_id']
+        semantic_search_result = SemanticSearchResult(
+            bert_score=item['score'],
+            article_title=[raw.article_title for raw in raw_search_results][idx],
+            section_title=[raw.section_title for raw in raw_search_results][idx],
+            text=[raw.text for raw in raw_search_results][idx],
+        )
+
+        reranked_semantic_search_results.append(semantic_search_result)
+
+    return reranked_semantic_search_results
+
+
+query = "What diseases spread fast and in the air?"
 raw_results = search(
-    query="World Health Organization",
+    query=query,
     sections_to_exclude=["See also", 'Further reading', 'Data and graphs', 'Medical journals', "External links"]
 )
 
+embedder = SentenceTransformer("distilbert-base-nli-stsb-mean-tokens")
+semantic_results = semantic_reranking(
+    query,
+    raw_results,
+    embedder,
+)
 
+[(r.article_title, r.section_title)  for r in semantic_results]
+
+[(r.article_title, r.section_title)  for r in raw_results][:10]
 
 
 
